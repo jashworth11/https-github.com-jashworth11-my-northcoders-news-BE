@@ -1,9 +1,6 @@
 const db = require("../connection");
 const format = require("pg-format");
-const convertTimestampToDate = (timestamp) => {
-  if (!timestamp) return null;
-  return new Date(timestamp).toISOString();
-};
+const { convertTimestampToDate, createRef } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
@@ -70,35 +67,48 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(usersQuery);
     })
     .then(() => {
+      const formattedArticleData = articleData.map((article) => {
+        const legitArticle = convertTimestampToDate(article);
+        return [
+          legitArticle.title,
+          legitArticle.topic,
+          legitArticle.author,
+          legitArticle.body,
+          legitArticle.created_at,
+          legitArticle.votes,
+          legitArticle.article_img_url,
+        ];
+      });
       const articlesQuery = format(
         `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;`,
-        articleData.map((article) => [
-          article.title,
-          article.topic,
-          article.author,
-          article.body,
-          convertTimestampToDate(article.created_at),
-          article.votes,
-          article.article_img_url,
-        ])
+        formattedArticleData
       );
       return db.query(articlesQuery);
     })
-    .then(() => {
+    .then((result) => {
+      const articleRefObject = createRef(result.rows);
+      console.log(result.rows, "....>");
+
+      const formattedCommentData = commentData.map((comment) => {
+        const legitComment = convertTimestampToDate(comment);
+        return [
+          articleRefObject[comment.article_title],
+          legitComment.body,
+          legitComment.votes,
+          legitComment.author,
+          legitComment.created_at,
+        ];
+      });
+      console.log(formattedCommentData, ",...<");
+
       const commentsQuery = format(
         `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *;`,
-        commentData.map((comment) => [
-          comment.article_id,
-          comment.body,
-          comment.votes,
-          comment.author,
-          convertTimestampToDate(comment.created_at),
-        ])
+        formattedCommentData
       );
       return db.query(commentsQuery);
     })
-    .then(() => {
-      console.log("Seeding completed successfully!");
+    .then((result) => {
+      console.log(result, "Seeding completed successfully!");
     })
     .catch((err) => {
       console.error("Error seeding database:", err);

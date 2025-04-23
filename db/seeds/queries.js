@@ -39,6 +39,14 @@ db.query("SELECT * FROM articles WHERE author = 'grumpy19';", (err, result) => {
     console.log(result.rows);
   }
 });
+db.query("SELECT * FROM comments WHERE votes > 10;", (err, result) => {
+  if (err) {
+    console.error("Error fetching high-vote comments:", err);
+  } else {
+    console.log("\nComments with more than 10 votes:");
+    console.log(result.rows);
+  }
+});
 // Well done if you've got this far! You should have now confirmed that your databases are fully seeded.
 
 // You should now be able to make some queries to the databases. Import your connection into a new file and see if you can query the following data from your dev database, by running the file with node:
