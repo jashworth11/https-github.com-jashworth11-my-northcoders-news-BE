@@ -8,6 +8,7 @@ const {
   getTopics,
   getArticleById,
   getAllArticlesDesc,
+  getArticleByIdComments,
 } = require("./app/controllers/controller");
 
 const {
@@ -21,6 +22,7 @@ app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticlesDesc);
+app.get("/api/articles/:article_id/comments", getArticleByIdComments);
 app.all("/*splat", handle404Errors);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
