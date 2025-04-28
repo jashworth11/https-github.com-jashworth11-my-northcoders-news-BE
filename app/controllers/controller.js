@@ -1,14 +1,26 @@
 const endpointsJson = require("../../endpoints.json");
+
 const { getTopics, selectArticleById } = require("../models/model");
 
 exports.getApi = (req, res, next) => {
   res.status(200).send(endpointsJson).catch(next);
+
+const { getTopics } = require("../models/model");
+exports.getApi = (req, res, next) => {
+  res
+    .status(200)
+    .send(endpointsJson)
+    .catch((err) => {
+      next(err);
+    });
+
 };
 exports.getTopics = (req, res, next) => {
   getTopics()
     .then((topics) => {
       res.status(200).send({ topics });
     })
+
     .catch(next);
 };
 exports.getArticleById = (req, res, next) => {
@@ -24,4 +36,9 @@ exports.getArticleById = (req, res, next) => {
       res.status(200).send({ article });
     })
     .catch(next);
+
+    .catch((err) => {
+      next(err);
+    });
+
 };

@@ -6,7 +6,11 @@ beforeAll(() => seed(data));
 afterAll(() => db.end());
 
 describe.skip("seed", () => {
-  describe("topics table", () => {
+
+  
+
+  describe.skip("topics table", () => {
+
     test("topics table exists", () => {
       return db
         .query(
@@ -373,7 +377,7 @@ describe.skip("seed", () => {
     });
   });
 
-  describe("comments table", () => {
+  describe.skip("comments table", () => {
     test("comments table exists", () => {
       return db
         .query(

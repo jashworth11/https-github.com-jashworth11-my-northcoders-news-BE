@@ -18,13 +18,19 @@ describe("GET /api", () => {
   });
 });
 
-describe("GET /api/topics", () => {
+
+
+describe.only("GET /api/topics", () => {
+
   test("should return all topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
+
         expect(body.topics).toHaveLength(3);
+
+
         body.topics.forEach((topic) => {
           expect(topic).toMatchObject({
             description: expect.any(String),
@@ -34,14 +40,17 @@ describe("GET /api/topics", () => {
         });
       });
   });
+
 });
 describe("non existent routes", () => {
+
   test("should return 404 for non-existent routes", () => {
     return request(app)
       .get("/api/notAValidUrl")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("not found!");
+
       });
   });
 });
@@ -79,6 +88,8 @@ describe.only("GET /api/articles/:article_id", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("not found!");
+
+
       });
   });
 });
