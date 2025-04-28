@@ -7,6 +7,7 @@ const {
   getApi,
   getTopics,
   getArticleById,
+  getAllArticlesDesc,
 } = require("./app/controllers/controller");
 
 const {
@@ -19,6 +20,7 @@ const {
 app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles", getAllArticlesDesc);
 app.all("/*splat", handle404Errors);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);

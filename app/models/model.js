@@ -13,3 +13,11 @@ exports.selectArticleById = (article_id) => {
       return result.rows[0];
     });
 };
+
+exports.selectArticlesDesc = () => {
+  return db
+    .query("SELECT * FROM articles ORDER BY created_at DESC")
+    .then((result) => {
+      return result.rows;
+    });
+};
