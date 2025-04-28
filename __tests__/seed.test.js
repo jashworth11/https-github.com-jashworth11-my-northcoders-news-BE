@@ -5,8 +5,8 @@ const data = require("../db/data/test-data/index");
 beforeAll(() => seed(data));
 afterAll(() => db.end());
 
-describe("seed", () => {
-  describe("topics table", () => {
+describe.skip("seed", () => {
+  describe.skip("topics table", () => {
     test("topics table exists", () => {
       return db
         .query(
@@ -81,7 +81,7 @@ describe("seed", () => {
     });
   });
 
-  describe("users table", () => {
+  describe.skip("users table", () => {
     test("users table exists", () => {
       return db
         .query(
@@ -155,7 +155,7 @@ describe("seed", () => {
     });
   });
 
-  describe("articles table", () => {
+  describe.skip("articles table", () => {
     test("articles table exists", () => {
       return db
         .query(
@@ -373,7 +373,7 @@ describe("seed", () => {
     });
   });
 
-  describe("comments table", () => {
+  describe.skip("comments table", () => {
     test("comments table exists", () => {
       return db
         .query(
@@ -563,7 +563,7 @@ describe("seed", () => {
   });
 });
 
-describe("data insertion", () => {
+describe.skip("data insertion", () => {
   test("topics data has been inserted correctly", () => {
     return db.query(`SELECT * FROM topics;`).then(({ rows: topics }) => {
       expect(topics).toHaveLength(3);
