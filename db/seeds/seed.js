@@ -87,7 +87,6 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then((result) => {
       const articleRefObject = createRef(result.rows);
-      console.log(result.rows, "....>");
 
       const formattedCommentData = commentData.map((comment) => {
         const legitComment = convertTimestampToDate(comment);
@@ -99,7 +98,6 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           legitComment.created_at,
         ];
       });
-      console.log(formattedCommentData, ",...<");
 
       const commentsQuery = format(
         `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *;`,
@@ -108,7 +106,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(commentsQuery);
     })
     .then((result) => {
-      console.log(result, "Seeding completed successfully!");
+      console.log("Seeding completed successfully!");
     })
     .catch((err) => {
       console.error("Error seeding database:", err);
