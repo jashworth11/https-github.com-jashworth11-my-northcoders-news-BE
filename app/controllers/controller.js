@@ -1,6 +1,10 @@
 const endpointsJson = require("../../endpoints.json");
 
-const { getTopics, selectArticleById } = require("../models/model");
+const {
+  getTopics,
+  selectArticleById,
+  selectArticlesDesc,
+} = require("../models/model");
 
 exports.getApi = (req, res, next) => {
   res.status(200).send(endpointsJson).catch(next);
@@ -24,6 +28,13 @@ exports.getArticleById = (req, res, next) => {
         return Promise.reject({ status: 404, msg: "not found!" });
       }
       res.status(200).send({ article });
+    })
+    .catch(next);
+};
+exports.getAllArticlesDesc = (req, res, next) => {
+  selectArticlesDesc()
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };
