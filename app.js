@@ -1,3 +1,7 @@
+const endpointsJson = require("./endpoints.json");
+const express = require("express");
+const app = express();
+const db = require("./db/connection");
 
 const {
   getApi,
@@ -5,12 +9,6 @@ const {
   getArticleById,
 } = require("./app/controllers/controller");
 
-const { getApi, getTopics } = require("./app/controllers/controller");
-
-const endpointsJson = require("./endpoints.json");
-const express = require("express");
-const app = express();
-const db = require("./db/connection");
 const {
   handle404Errors,
   handleCustomErrors,
@@ -20,10 +18,7 @@ const {
 
 app.get("/api", getApi);
 app.get("/api/topics", getTopics);
-
 app.get("/api/articles/:article_id", getArticleById);
-
-
 app.all("/*splat", handle404Errors);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
