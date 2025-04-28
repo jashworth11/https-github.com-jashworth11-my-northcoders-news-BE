@@ -6,7 +6,11 @@ beforeAll(() => seed(data));
 afterAll(() => db.end());
 
 describe.skip("seed", () => {
+
+  
+
   describe.skip("topics table", () => {
+
     test("topics table exists", () => {
       return db
         .query(
