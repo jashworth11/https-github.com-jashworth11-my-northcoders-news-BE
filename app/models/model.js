@@ -74,3 +74,13 @@ exports.removeCommentById = (comment_id) => {
       return rows[0];
     });
 };
+exports.selectTopics = () => {
+  return db.query("SELECT * FROM topics").then(({ rows }) => {
+    return rows;
+  });
+};
+exports.selectUsers = () => {
+  return db.query("SELECT * FROM users").then(({ rows }) => {
+    return rows;
+  });
+};
