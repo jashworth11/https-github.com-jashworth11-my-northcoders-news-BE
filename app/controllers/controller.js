@@ -7,6 +7,7 @@ const {
   insertComment,
   selectCommentsByArticleId,
   checkArticleExists,
+  updateArticleVotes,
 } = require("../models/model");
 
 exports.getApi = (req, res, next) => {
@@ -65,8 +66,15 @@ exports.postComment = (req, res, next) => {
 
       res.status(201).send({ comment });
     })
-    .catch((err) => {
-      console.log("error", err);
-      next(err);
-    });
+    .catch(next);
+};
+exports.patchArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  checkArticleExists(article_id)
+    .then(() => updateArticleVotes(article_id, inc_votes))
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
