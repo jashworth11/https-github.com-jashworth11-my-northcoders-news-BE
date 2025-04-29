@@ -43,5 +43,22 @@
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Add a new comment to an article",
+    "requestBody": {
+      "username": "string (required)",
+      "body": "string (required)"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "body": "staffy is the best breed",
+        "article_id": 1,
+        "author": "dog_lover",
+        "votes": 0,
+        "created_at": "1625349"
+      }
+    }
   }
 }

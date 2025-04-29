@@ -166,3 +166,61 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe.only("POST /api/articles/:article_id/comments", () => {
+  test("201: responds with the posted comment", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "staffy is the best breed",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: newComment.body,
+          article_id: 1,
+          author: newComment.username,
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("400: responds with error for missing fields e.g body", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "test_user" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request!");
+      });
+  });
+  test("400: responds with error for invalid article_id", () => {
+    return request(app)
+      .post("/api/articles/not-a-number/comments")
+      .send({ username: "test_user", body: "Test" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request!");
+      });
+  });
+  test("404: responds with error for non-existent article", () => {
+    return request(app)
+      .post("/api/articles/9999/comments")
+      .send({ username: "test_user", body: "Test" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found!");
+      });
+  });
+  test("400: responds with error for non-existent username", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "notARealUser", body: "Test" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request!");
+      });
+  });
+});

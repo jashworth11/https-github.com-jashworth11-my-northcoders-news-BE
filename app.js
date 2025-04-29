@@ -2,13 +2,15 @@ const endpointsJson = require("./endpoints.json");
 const express = require("express");
 const app = express();
 const db = require("./db/connection");
-
+app.use(express.json());
 const {
   getApi,
   getTopics,
   getArticleById,
   getAllArticlesDesc,
-  getArticleByIdComments,
+  checkArticleExists,
+  getCommentsByArticleId,
+  postComment,
 } = require("./app/controllers/controller");
 
 const {
@@ -22,7 +24,8 @@ app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticlesDesc);
-app.get("/api/articles/:article_id/comments", getArticleByIdComments);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.post("/api/articles/:article_id/comments", postComment);
 app.all("/*splat", handle404Errors);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
