@@ -4,7 +4,9 @@ const {
   getTopics,
   selectArticleById,
   selectArticlesDesc,
-  selectArticleByIdComments,
+  insertComment,
+  selectCommentsByArticleId,
+  checkArticleExists,
 } = require("../models/model");
 
 exports.getApi = (req, res, next) => {
@@ -20,9 +22,6 @@ exports.getTopics = (req, res, next) => {
 };
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  if (isNaN(Number(article_id))) {
-    return Promise.reject({ status: 400, msg: "bad request!" });
-  }
   selectArticleById(article_id)
     .then((article) => {
       if (!article) {
@@ -39,11 +38,35 @@ exports.getAllArticlesDesc = (req, res, next) => {
     })
     .catch(next);
 };
-exports.getArticleByIdComments = (req, res, next) => {
+
+exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  selectArticleByIdComments(article_id)
+  checkArticleExists(article_id)
+    .then(() => {
+      return selectCommentsByArticleId(article_id);
+    })
     .then((comments) => {
       res.status(200).send({ comments });
     })
     .catch(next);
+};
+exports.postComment = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+  console.log("body", body);
+  console.log("username", username);
+  console.log("article_id", article_id);
+  checkArticleExists(article_id)
+    .then(() => {
+      return insertComment(article_id, username, body);
+    })
+    .then((comment) => {
+      console.log("comment", comment);
+
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      console.log("error", err);
+      next(err);
+    });
 };
