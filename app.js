@@ -8,10 +8,10 @@ const {
   getTopics,
   getArticleById,
   getAllArticlesDesc,
-  checkArticleExists,
   getCommentsByArticleId,
   postComment,
   patchArticleById,
+  deleteCommentById,
 } = require("./app/controllers/controller");
 
 const {
@@ -28,6 +28,7 @@ app.get("/api/articles", getAllArticlesDesc);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticleById);
+app.delete("/api/comments/:comment_id", deleteCommentById);
 app.all("/*splat", handle404Errors);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
