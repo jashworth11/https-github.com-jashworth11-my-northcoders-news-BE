@@ -3,7 +3,7 @@ const endpointsJson = require("../../endpoints.json");
 const {
   getTopics,
   selectArticleById,
-  selectArticlesDesc,
+  selectArticles,
   insertComment,
   selectCommentsByArticleId,
   checkArticleExists,
@@ -34,8 +34,9 @@ exports.getArticleById = (req, res, next) => {
     })
     .catch(next);
 };
-exports.getAllArticlesDesc = (req, res, next) => {
-  selectArticlesDesc()
+exports.getAllArticles = (req, res, next) => {
+  const { sort_by, order } = req.query;
+  selectArticles(sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
     })

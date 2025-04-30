@@ -13,13 +13,29 @@ exports.selectArticleById = (article_id) => {
       return result.rows[0];
     });
 };
-exports.selectArticlesDesc = () => {
-  return db
-    .query("SELECT * FROM articles ORDER BY created_at DESC")
-    .then((result) => {
-      return result.rows;
-    });
+exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
+  const allowedInputs = [
+    "created_at",
+    "title",
+    "votes",
+    "article_id",
+    "comment_count",
+  ];
+  let queryStr = `SELECT 
+  articles.*,
+  COUNT(comments.comment_id)::INT AS comment_count
+FROM articles
+LEFT JOIN comments ON articles.article_id = comments.article_id
+GROUP BY articles.article_id
+ORDER BY ${sort_by} ${order}`;
+  if (!allowedInputs.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "bad request!" });
+  }
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
 };
+
 exports.checkArticleExists = (article_id) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
