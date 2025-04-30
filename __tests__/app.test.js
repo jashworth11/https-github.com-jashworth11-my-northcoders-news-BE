@@ -379,3 +379,31 @@ describe("GET /api/articles sort by", () => {
       });
   });
 });
+describe("GET /api/articles (topic filter)", () => {
+  test("200: filters articles by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("200: ignores topic filter when not provided", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length > 0).toBe(true);
+      });
+  });
+  test("404: returns error for non-existent topic", () => {
+    return request(app)
+      .get("/api/articles?topic=nonexistent")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found");
+      });
+  });
+});

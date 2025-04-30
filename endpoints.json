@@ -159,5 +159,24 @@
         "description": "Sorted articles with comment counts"
       }
     }
+  },
+  "GET /api/articles?sort_by=topics": {
+    "description": "Returns all articles, sorted by any valid column (default: newest first). Can be filtered by topic.",
+    "queries": [
+      "sort_by (column to sort by, defaults to created_at)",
+      "order (asc or desc, defaults to desc)",
+      "topic (filters by topic, optional)"
+    ],
+    "exampleResponse": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "created_at": 1594329060000,
+        "votes": 101,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
   }
 }
