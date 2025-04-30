@@ -335,7 +335,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   test("200: responds with an array of user objects", () => {
     return request(app)
       .get("/api/users")
@@ -350,6 +350,32 @@ describe.only("GET /api/users", () => {
             avatar_url: expect.any(String),
           });
         });
+      });
+  });
+});
+describe("GET /api/articles sort by", () => {
+  test("should default to sorting by created_at in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("should sort in specified order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+  test("should return 400 for invalid sort_by column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=not_a_column")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request!");
       });
   });
 });
