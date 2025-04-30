@@ -13,7 +13,7 @@ exports.selectArticleById = (article_id) => {
       return result.rows[0];
     });
 };
-exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
+exports.selectArticles = (sort_by = "created_at", order = "DESC", topic) => {
   const allowedInputs = [
     "created_at",
     "title",
@@ -21,17 +21,36 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
     "article_id",
     "comment_count",
   ];
-  let queryStr = `SELECT 
-  articles.*,
-  COUNT(comments.comment_id)::INT AS comment_count
-FROM articles
-LEFT JOIN comments ON articles.article_id = comments.article_id
-GROUP BY articles.article_id
-ORDER BY ${sort_by} ${order}`;
+  let queryStr = `
+    SELECT 
+      articles.*,
+      COUNT(comments.comment_id)::INT AS comment_count
+    FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id
+  `;
   if (!allowedInputs.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "bad request!" });
   }
-  return db.query(queryStr).then(({ rows }) => {
+  const queryValues = [];
+  if (topic) {
+    queryStr += ` WHERE articles.topic = $1`;
+    queryValues.push(topic);
+  }
+  queryStr += `
+    GROUP BY articles.article_id
+    ORDER BY ${sort_by} ${order}
+  `;
+  return db.query(queryStr, queryValues).then(({ rows }) => {
+    if (topic && rows.length === 0) {
+      return db
+        .query("SELECT * FROM topics WHERE slug = $1", [topic])
+        .then(({ rows: topicRows }) => {
+          if (topicRows.length === 0) {
+            return Promise.reject({ status: 404, msg: "Topic not found" });
+          }
+          return [];
+        });
+    }
     return rows;
   });
 };
