@@ -10,6 +10,7 @@ const {
   updateArticleVotes,
   removeCommentById,
   selectUsers,
+  selectUserByUsername,
 } = require("../models/model");
 
 exports.getApi = (req, res, next) => {
@@ -94,6 +95,14 @@ exports.getUsers = (req, res, next) => {
   selectUsers()
     .then((users) => {
       res.status(200).send({ users });
+    })
+    .catch(next);
+};
+exports.getUserByUsername = (req, res, next) => {
+  const { username } = req.params;
+  selectUserByUsername(username)
+    .then((user) => {
+      res.status(200).json({ user });
     })
     .catch(next);
 };
