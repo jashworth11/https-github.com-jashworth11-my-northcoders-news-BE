@@ -35,6 +35,7 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC", topic) => {
     "article_id",
     "comment_count",
   ];
+
   let queryStr = `
     SELECT 
       articles.*,
@@ -45,6 +46,7 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC", topic) => {
   if (!allowedInputs.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "bad request!" });
   }
+
   const queryValues = [];
   if (topic) {
     queryStr += ` WHERE articles.topic = $1`;
@@ -144,6 +146,22 @@ exports.selectUserByUsername = (username) => {
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "User not found" });
+      }
+      return rows[0];
+    });
+};
+exports.updateCommentVotes = (comment_id, inc_votes) => {
+  return db
+    .query(
+      `UPDATE comments 
+     SET votes = votes + $1
+     WHERE comment_id = $2
+     RETURNING comment_id, body, votes, author, article_id, created_at`,
+      [inc_votes, comment_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "not found!" });
       }
       return rows[0];
     });

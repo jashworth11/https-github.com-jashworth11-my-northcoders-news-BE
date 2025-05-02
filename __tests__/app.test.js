@@ -398,6 +398,7 @@ describe("GET /api/articles (topic filter)", () => {
         expect(body.articles.length > 0).toBe(true);
       });
   });
+
   test("404: returns error for non-existent topic", () => {
     return request(app)
       .get("/api/articles?topic=nonexistent")
@@ -462,6 +463,53 @@ describe("GET /api/users/:username", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("User not found");
+      });
+  });
+});
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: increments comment votes", () => {
+    const testVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(testVote)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          comment_id: 1,
+          votes: expect.any(Number),
+        });
+      });
+  });
+
+  test("200: decrements comment votes", () => {
+    const testVote = { inc_votes: -1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(testVote)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment.votes).toBe(15);
+      });
+  });
+
+  test("400: invalid inc_votes type", () => {
+    const testVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(testVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request!");
+      });
+  });
+  test("404: comment not found", () => {
+    const testVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/9999")
+      .send(testVote)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found!");
       });
   });
 });
