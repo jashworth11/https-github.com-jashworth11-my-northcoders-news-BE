@@ -47,3 +47,5 @@ cd northcoders-news-BE
 # Installation
 
 npm install
+
+Test
