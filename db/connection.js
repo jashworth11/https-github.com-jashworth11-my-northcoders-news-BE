@@ -11,7 +11,7 @@ if (ENV === "production") {
   config.password = process.env.PGPASSWORD;
   config.host = process.env.PGHOST;
   config.database = process.env.PGDATABASE;
-  config.port = process.env.PORT;
+  config.port = process.env.PGPORT;
 }
 if (!process.env.PGDATABASE) {
   throw new Error("PGDATABASE or DATABASE_URL not set");
